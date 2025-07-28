@@ -1,5 +1,16 @@
-fn median(a: Vec<f32>) -> Option<f32> {
-    todo!();
+// The best would be, I think, having a &mut Vec here 
+// but that would require to change all the tests.
+// So I'll have a tmp mut var to overcome this.
+fn median(numbers: Vec<f32>) -> Option<f32> {
+    let mut tmp_n = numbers;
+    if tmp_n.is_empty() {
+        return None;
+    }
+    tmp_n.sort_by(|x, y| x.partial_cmp(y).unwrap());
+    tmp_n.remove(0);
+    tmp_n.remove(tmp_n.len() - 1);
+    let median: f32 = tmp_n.iter().sum::<f32>()/tmp_n.len() as f32;
+    Some(median)
 }
 
 fn main() {
