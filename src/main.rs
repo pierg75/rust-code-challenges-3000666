@@ -1,5 +1,12 @@
-fn unique(a: Vec<i32>) -> Vec<i32> {
-    todo!();
+fn unique<T: PartialEq + Ord>(list: Vec<T>) -> Vec<T> {
+    let mut new_list: Vec<T> = Vec::new();
+    for e in list.into_iter() {
+        if ! new_list.contains(&e) {
+            new_list.push(e);
+        }
+    }
+    new_list.sort();
+    new_list
 }
 
 // advanced 1: use generic types
@@ -26,8 +33,8 @@ fn main() {
 
 #[test]
 fn empty_list() {
-    let input = vec![];
-    let expected_output = vec![];
+    let input: Vec<u8> = vec![];
+    let expected_output: Vec<u8> = vec![];
     let actual_output = unique(input);
     assert_eq!(actual_output, expected_output);
 }
