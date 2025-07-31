@@ -1,6 +1,26 @@
-fn info(a: &T) {
-    todo!();
+use core::fmt;
+use std::{ffi::CString, fmt::Display};
+
+
+//fn info<T: Display>(a: T) {
+//    println!("{}", a); 
+//}
+
+fn info<T: AsRef<str>>(a: T) {
+    println!("{}", a.as_ref());
 }
+
+// impl fmt::Display for Path {
+//     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+//        write!(f, "{}", self.display())
+//    }
+// }
+
+// impl fmt::Display for CString {
+//    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+//       write!(f, "{}", self)
+//   }
+//}
 
 fn main() {
     let a = "?";
@@ -9,10 +29,11 @@ fn main() {
     info(&b);
 
     // Advanced 1
-    // use std::ffi::CString;
+    use std::ffi::CString;
     
-    // let c = CString::new("?").unwrap();
-    // info(&input);
+    let c = CString::new("?").unwrap();
+    // info(c.into_string().unwrap());
+    info(&c);
 
     // Advanced 2
     // use std::path::Path;
