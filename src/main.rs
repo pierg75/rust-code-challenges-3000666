@@ -1,10 +1,12 @@
 #![allow(unused)]
 
+#[derive(Debug)]
 enum Scale {
     Celsius,
     Fahrenheit,
 }
 
+#[derive(Debug)]
 struct Temperature {
     degrees: f32,
     scale: Scale,
@@ -19,11 +21,17 @@ impl Temperature {
     }
 
     fn to_celsius(&self) -> f32 {
-        todo!();
+        match self.scale {
+            Scale::Celsius => self.degrees,
+            Scale::Fahrenheit => ((self.degrees - 32.0) * 5.0) / 9.0,
+        }
     }
 
     fn to_fahrenheit(&self) -> f32 {
-        todo!();
+        match self.scale {
+            Scale::Celsius => (self.degrees * 9.0 / 5.0) + 32.0,
+            Scale::Fahrenheit => self.degrees,
+        }
     }
 }
 
@@ -31,7 +39,13 @@ fn main() {
     let temp = Temperature::new(20.0);
 
     println!("fun fact: 20°C is an integer in celsius and fahrenheit");
-    println!("          {:.1}°C = {:.1}°F", temp.to_celsius(), temp.to_fahrenheit());
+    println!(
+        "          {:.1}°C = {:.1}°F",
+        temp.to_celsius(),
+        temp.to_fahrenheit()
+    );
+    let fz = Temperature::new(0.0);
+    println!("freezing: {} {}", fz.to_celsius(), fz.to_fahrenheit());
 }
 
 #[test]
@@ -55,7 +69,8 @@ fn freezing() {
         scale: Scale::Fahrenheit,
     };
 
+    println!("{:?}", freezing);
+    println!("{:?}", freezing.to_celsius());
     assert!(freezing.to_celsius() < 0.001);
     assert!(freezing.to_celsius() > -0.01);
 }
-
