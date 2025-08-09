@@ -1,3 +1,4 @@
+use core::fmt;
 use std::str::FromStr;
 
 struct Isbn {
@@ -5,11 +6,48 @@ struct Isbn {
     digits: Vec<u8>,
 }
 
+#[derive(Debug)]
+enum DigitError {
+    TooLong,
+    TooShort,
+    FailedCHecksum,
+    InvalidDigit,
+}
+
+impl fmt::Display for DigitError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            DigitError::TooLong => write!(f, "Digit too long!"),
+            DigitError::TooShort => write!(f, "Digit too short!"),
+            DigitError::FailedCHecksum => write!(f, "Checksum not valid!"),
+            DigitError::InvalidDigit => write!(f, "Invalid digit!"),
+        }
+    }
+}
+
 impl FromStr for Isbn {
-    type Err = (); // TODO: replace with appropriate type
+    type Err = DigitError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        todo!();        
+        let mut isbn = Isbn {
+            raw: s.to_string(),
+            digits: Vec::new(),
+        };
+        for c in s.chars() {
+            if c.is_ascii_digit() {
+                let Ok(ctoi) = c.to_string().parse::<u8>() else {
+                    return Err(DigitError::InvalidDigit);
+                };
+                isbn.digits.push(ctoi);
+            }
+        }
+        if isbn.digits.len() > 13 {
+            return Err(DigitError::TooLong);
+        }
+        if isbn.digits.len() < 13 {
+            return Err(DigitError::TooShort);
+        }
+        Ok(isbn)
     }
 }
 
@@ -21,7 +59,20 @@ impl std::fmt::Display for Isbn {
 
 // https://en.wikipedia.org/wiki/International_Standard_Book_Number#ISBN-13_check_digit_calculation
 fn calculate_check_digit(digits: &[u8]) -> u8 {
-    todo!()
+    // Multiply the right digits by 3 and sum them all.
+    // The result will be modulo 10.
+    let m_numbers: Vec<u8> = digits
+        .iter()
+        .enumerate()
+        .map(|(idx, digit)| if idx % 2 == 0 { *digit } else { *digit * 3 })
+        .collect();
+    let last_digit = 10 - (m_numbers.into_iter().sum::<u8>() % 10);
+    // The last digit has to be a single digit, with zero replacing ten.
+    if last_digit == 10 {
+        0
+    } else {
+        last_digit
+    }
 }
 
 fn main() {
@@ -38,6 +89,7 @@ fn can_correctly_calculate_check_digits() {
     ];
 
     for (case, check) in cases.iter() {
+        println!("case: {:?} check {:?}", case, check);
         let actual = calculate_check_digit(case);
         println!("{:?} -> {}?  {}", &case, check, actual);
         assert_eq!(calculate_check_digit(case), *check)
