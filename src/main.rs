@@ -71,7 +71,7 @@ fn calculate_check_digit(digits: &[u8]) -> u8 {
         .enumerate()
         .map(|(idx, digit)| if idx % 2 == 0 { *digit } else { *digit * 3 })
         .collect();
-    let last_digit = 10 - (m_numbers.into_iter().sum::<u8>() % 10);
+    let last_digit = 10 - (m_numbers.iter().sum::<u8>() % 10);
     // The last digit has to be a single digit, with zero replacing ten.
     if last_digit == 10 {
         0
