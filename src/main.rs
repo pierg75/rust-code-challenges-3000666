@@ -47,7 +47,12 @@ impl FromStr for Isbn {
         if isbn.digits.len() < 13 {
             return Err(DigitError::TooShort);
         }
-        Ok(isbn)
+
+        if calculate_check_digit(&isbn.digits) == *isbn.digits.last().unwrap() {
+            Ok(isbn)
+        } else {
+            Err(DigitError::FailedCHecksum)
+        }
     }
 }
 
