@@ -2,9 +2,7 @@ mod run_length_encoding {
     pub fn encode(text: &str) -> String {
         let mut new_text = String::new();
         let mut counter = 1;
-        if text.is_empty() {
-            return new_text;
-        }
+
         for (idx, value) in text.chars().enumerate() {
             if let Some(next_char) = text.chars().nth(idx + 1) {
                 if next_char.ne(&value) || counter >= 9 {
@@ -48,6 +46,13 @@ fn abc() {
     use run_length_encoding::*;
 
     assert_eq!(encode("abc"), "1a1b1c");
+}
+
+#[test]
+fn empty() {
+    use run_length_encoding::*;
+
+    assert_eq!(encode(""), "");
 }
 
 #[test]
