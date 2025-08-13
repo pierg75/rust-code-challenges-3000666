@@ -1,15 +1,46 @@
 mod run_length_encoding {
     pub fn encode(text: &str) -> String {
-        todo!()
+        let mut new_text = String::new();
+        let mut counter = 1;
+        if text.is_empty() {
+            return new_text;
+        }
+        for (idx, value) in text.chars().enumerate() {
+            if let Some(next_char) = text.chars().nth(idx + 1) {
+                if next_char.ne(&value) || counter >= 9 {
+                    new_text.push_str(format!("{}{}", counter, value).as_str());
+                    counter = 1;
+                } else {
+                    counter += 1;
+                }
+            } else {
+                new_text.push_str(format!("{}{}", counter, value).as_str());
+            }
+        }
+        new_text
     }
-    
+
     pub fn decode(text: &str) -> String {
-        todo!()
+        let mut new_text = String::new();
+        let mut count: char = ' ';
+        for c in text.chars() {
+            if c.is_numeric() {
+                count = c;
+            } else {
+                let counti = match count.to_digit(10) {
+                    Some(n) => n as usize,
+                    None => continue,
+                };
+                new_text.push_str(String::from(c).repeat(counti).as_str());
+            }
+        }
+        new_text
+
     }
 }
 
 fn main() {
-    // 
+    //
 }
 
 #[test]
